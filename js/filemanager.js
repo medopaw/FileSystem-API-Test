@@ -88,20 +88,26 @@ function createRandEntry() {
 
 function displayDir(dir) {
     debug('now at '+dir.fullPath);
-    document.getElementById('head').innerHTML = dir.fullPath;
+    $('#path').text(dir.fullPath);
     dir.createReader().readEntries(function(results) {
-        var html = '';
+        $('#count').text(results.length + ' entries in total.');
         for (var i = 0; i < results.length; i++) {
+            var $div = $('<div/>').data('entry', results[i]).hover(function() {
+                var $this = $(this), entry = $this.data('entry');
+                debug('hover over ' + entry.name);
+                entry.getMetadata(function(result) {
+                    var info = '';
+                    $('#info').html('modificationTime: ' + result.modificationTime + '<br/>size: ' + result.size);
+                }, errorHandler);
+            });
             if (results[i].isDirectory) {
-                html += '[' + results[i].name + ']';
+                $div.text('[' + results[i].name + ']');
             } else {
-                html += results[i].name;
+                $div.text(results[i].name);
             }
-            html += '<br/>';
+            $div.appendTo($('#main'));
         }
-        document.getElementById('main').innerHTML = html;
     }, errorHandler);
-
 }
 
 function errorHandler(e) {
