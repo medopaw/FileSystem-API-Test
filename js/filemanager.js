@@ -12,6 +12,9 @@ var glb = {
             work: createRandEntry
         }, {
             work: function() {
+                $('#header').hover(function() {
+                    $('#info').html('');
+                })
                 displayDir(glb.fs.root);
             }
     }]);
@@ -88,20 +91,33 @@ function createRandEntry() {
 
 function displayDir(dir) {
     debug('now at '+dir.fullPath);
+
     $('#path').text(dir.fullPath);
     dir.createReader().readEntries(function(results) {
         $('#count').text(results.length + ' entries in total.');
+        $up = $('<div><a href="">..</a></div>');
+        $up.find('a').click(function(e) {
+            e.preventDefault();
+            dir.getParent(function(result) {
+                displayDir(result);
+            }, errorHandler);
+        });
+        $('#main').empty().append($up);
         for (var i = 0; i < results.length; i++) {
             var $div = $('<div/>').data('entry', results[i]).hover(function() {
                 var $this = $(this), entry = $this.data('entry');
                 debug('hover over ' + entry.name);
                 entry.getMetadata(function(result) {
                     var info = '';
-                    $('#info').html('modificationTime: ' + result.modificationTime + '<br/>size: ' + result.size);
+                    $('#info').html('name: ' + entry.name + '<br/>type: ' + (entry.isDirectory ? 'Directory' : 'File') + '<br/>modificationTime: ' + result.modificationTime + '<br/>size: ' + result.size);
                 }, errorHandler);
             });
             if (results[i].isDirectory) {
-                $div.text('[' + results[i].name + ']');
+                $div.append($('<a/>').attr('href', '').text('[' + results[i].name + ']').click(function(e) {
+                    e.preventDefault();
+                    var entry = $(this).closest('div').data('entry');
+                    displayDir(entry);
+                }));
             } else {
                 $div.text(results[i].name);
             }
