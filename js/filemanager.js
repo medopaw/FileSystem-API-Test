@@ -33,16 +33,17 @@ function createRandEntry() {
     var runner = this.engine;
     var dirs = [glb.dir];
     var engine = new Engine([{
+        test: function() {
+            return this.parentDone && this.childrenDone;
+        },
         work: function() {
-            var engine = this.engine;
+            var _this = this, engine = this.engine;
             glb.dir.getParent(function(result) {
                 dirs.push(result);
+                _this.parentDone = true;
+                debug('parent done:'+_this.parentDone+', children done:'+_this.childrenDone);
                 engine.check();
             }, errorHandler);
-        }
-    }, {
-        work: function() {
-            var engine = this.engine;
             glb.dir.createReader().readEntries(function(results) {
                 if (results.length > 0) {
                     for (var i = 0; i < results.length; i++) {
@@ -51,6 +52,8 @@ function createRandEntry() {
                         }
                     }
                 }
+                _this.childrenDone = true;
+                debug('parent done:'+_this.parentDone+', children done:'+_this.childrenDone);
                 engine.check();
             }, errorHandler);
         }
