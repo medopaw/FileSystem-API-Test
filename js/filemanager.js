@@ -10,8 +10,11 @@ var glb = {
         }, {
             count: 100,
             work: createRandEntry
-        }], function() {
-    });
+        }, {
+            work: function() {
+                displayDir(glb.fs.root);
+            }
+    }]);
     engine.start();
 })();
 
@@ -21,7 +24,7 @@ function initFS() {
         window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
         window.requestFileSystem(TEMPORARY, 1024 * 1024, function(fs) {
             glb.fs = fs;
-            glb.dir = fs.root;debug(glb.dir.fullPath);
+            glb.dir = fs.root;
             runner.check();
         }, errorHandler);
     } catch (ex) {
@@ -45,11 +48,9 @@ function createRandEntry() {
                 engine.check();
             }, errorHandler);
             glb.dir.createReader().readEntries(function(results) {
-                if (results.length > 0) {
-                    for (var i = 0; i < results.length; i++) {
-                        if (results[i].isDirectory) {
-                            dirs.push(results[i]);
-                        }
+                for (var i = 0; i < results.length; i++) {
+                    if (results[i].isDirectory) {
+                        dirs.push(results[i]);
                     }
                 }
                 _this.childrenDone = true;
@@ -83,7 +84,25 @@ function createRandEntry() {
         runner.check();
     });
     engine.start();
- }
+}
+
+function displayDir(dir) {
+    debug('now at '+dir.fullPath);
+    document.getElementById('head').innerHTML = dir.fullPath;
+    dir.createReader().readEntries(function(results) {
+        var html = '';
+        for (var i = 0; i < results.length; i++) {
+            if (results[i].isDirectory) {
+                html += '[' + results[i].name + ']';
+            } else {
+                html += results[i].name;
+            }
+            html += '<br/>';
+        }
+        document.getElementById('main').innerHTML = html;
+    }, errorHandler);
+
+}
 
 function errorHandler(e) {
     var msg = '';
