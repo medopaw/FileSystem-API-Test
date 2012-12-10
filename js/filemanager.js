@@ -5,7 +5,7 @@ var glb = {
 };
 
 (function() {
-    var engine = new Engine([{
+    var engine = new TaskEngine([{
             work: initFS
         }, {
             count: 100,
@@ -38,7 +38,7 @@ function initFS() {
 function createRandEntry() {
     var runner = this.engine;
     var dirs = [glb.dir];
-    var engine = new Engine([{
+    var engine = new TaskEngine([{
         test: function() {
             return this.parentDone && this.childrenDone;
         },
