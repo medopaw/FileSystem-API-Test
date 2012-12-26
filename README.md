@@ -1,6 +1,6 @@
 FileSystem-API-Test
 ===================
 
-Run in chrome.
+Test [FileSystem API](http://www.w3.org/TR/file-system-api/). So far only Chrome implement this API.
 
-So far it creates a random file system for you to traverse.
+It creates a random file system for you to traverse.
