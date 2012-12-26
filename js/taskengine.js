@@ -1,4 +1,4 @@
-TaskEngine = function(tasks, onend) {
+function TaskEngine(tasks, onend) {
     this.end = onend || function() {};
     this.progress = 0;
     for (var i = 0; i < tasks.length; i++) {
@@ -21,10 +21,10 @@ TaskEngine = function(tasks, onend) {
         tasks[i].onfail = tasks[i].onfail || function() {};
     }
     this.tasks = tasks;
-};
+}
 
 TaskEngine.prototype.start = function() {
-    if (this.tasks.length > 0) {
+    if (this.tasks.length) {
         this.tasks[0].work();
     }
 };
