@@ -1,36 +1,47 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html class="no-js ui-mobile-rendering" lang="en">
+<head>
+      <title>File Manager</title>
+      <meta name="description" content="">
 
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="pragma" content="no-cache">
-        <title>File Manager</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <style>
-            #count {
-                text-align: right;
-            }
-            #info {
-                position: fixed;
-                top: 80px;
-                right: 100px;
-            }
-        </style>
+      <link rel="stylesheet" href="style/jquery.mobile.css" />
+      <link rel="stylesheet" href="style/filemanager.css" />
+      <script>
+        window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
+        window.requestFileSystem(TEMPORARY, 1024 * 1024, function(fs) {
+        navigator.mozSDCard = {
+            name: "SDCard",
+            root: fs.root
+        };
+        console.log(navigator.mozSDCard.root);
+        });
+      </script>
+      <script src="js/libs/require.js" data-main="js/filemanager"></script>
+</head>
+<body>
 
-        <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
-        <script type="text/javascript" src="js/utils.js"></script>
-        <script type="text/javascript" src="js/taskengine.js"></script>
-        <script type="text/javascript" src="js/filemanager.js"></script>
+<div id="home" data-role="page" data-title="Categories">
+  
+      <div id="header" data-role="header">
+      </div><!-- /header -->
+  
+      <div data-role="content">
+            <ul id="entries" data-role="listview" data-inset="true">
+            </ul>
+      </div><!-- /content -->
 
-        <script>
-        </script>
-    </head>
+</div>
 
-    <body>
-        <div id="header"><div id="path"></div><div id="count"></div></div>
-        <hr/>
-        <div id="main"></div>
-        <div id="info"></div>
-    </body>
+<!-- Underscore Templates -->
+<script id="header-template" type="text/template">
+    <img id="up-button" src="style/images/up_icon.png" /><span> <%= dir.fullPath %></span>
+</script>
 
+<script id="entry-template" type="text/template">
+    <img src="style/images/<%= entry.isDirectory ? 'dir' : 'file' %>_icon.png" /><span><%= entry.name %></span>
+</script>
+
+</body>
 </html>
