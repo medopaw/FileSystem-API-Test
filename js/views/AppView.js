@@ -76,22 +76,24 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
 
         onTapPasteButton: function() {
             var entriesCollection = this.entriesView.collection, clipboard = Utils.clipboard;
+            var that = this, parentDirEntry = this.model.get("dirEntry");
             console.log(clipboard.length + " entries in clipboard");
+            var successHandler = function(result) {
+                // current dir may have changed
+                if (that.model.get("dirEntry").fullPath == parentDirEntry.fullPath) {
+                    var entryModel = new EntryModel({entry: result});
+                    entriesCollection.add(entryModel);
+                }
+            };
             for (var i = 0; i < clipboard.length; i++) {
                 console.log(clipboard.action);
                 switch (clipboard.action) {
                     case "Copy": {
-                        clipboard[i].copyTo(this.model.get("dirEntry"), undefined, function(result) {
-                            var entryModel = new EntryModel({entry: result});
-                            entriesCollection.add(entryModel);
-                        }, Utils.errorHandler);
+                        clipboard[i].copyTo(parentDirEntry, undefined, successHandler, Utils.errorHandler);
                         break;
                     }
                     case "Move": {
-                        clipboard[i].moveTo(this.model.get("dirEntry"), undefined, function(result) {
-                            var entryModel = new EntryModel({entry: result});
-                            entriesCollection.add(entryModel);
-                        }, Utils.errorHandler);
+                        clipboard[i].moveTo(parentDirEntry, undefined, successHandler, Utils.errorHandler);
                         break;
                     }
                     default: {
