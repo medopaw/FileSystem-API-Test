@@ -55,7 +55,7 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
             var dirEntry = this.model.get("dirEntry"), that = this;
             dirEntry.getParent(function(result) {
                 that.model.set("dirEntry", result);
-            });
+            }, Utils.errorHandler);
         },
 
         onTapEditButton: function(e) {
@@ -157,8 +157,12 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
             // console.log(this.entriesView);
             var that = this;
             dirEntry.createReader().readEntries(function(results) {
-                that.entriesView.collection.setEntries(results);
-            });
+                var entries = [];
+                for (var i = 0; i < results.length; i++) {
+                    entries.push(results.item(i));
+                }
+                that.entriesView.collection.setEntries(entries);
+            }, Utils.errorHandler);
         },
 
         changeMode: function() {
