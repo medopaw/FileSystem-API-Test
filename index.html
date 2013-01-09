@@ -24,9 +24,9 @@
 </head>
 <body>
 
-<div id="home" data-role="page" data-title="File Manger">
+<div id="home" data-role="page" data-title="File Manager">
 
-      <div id="header" data-role="header">
+      <div id="header" data-role="header" data-position="fixed">
       </div><!-- /header -->
 
       <div data-role="content">
@@ -34,14 +34,16 @@
             </ul>
       </div><!-- /content -->
 
-      <div id="footer" data-role="footer">
+      <div id="footer" data-role="footer" data-position="fixed">
       </div><!-- /footer -->
 
 </div>
 
 <!-- Underscore Templates -->
 <script id="header-template" type="text/template">
-    <a href="javascript:void(0)" id="up-button" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-inline="true" data-mini="true" data-theme="a">Up</a><span id="dir-text"><%= dir.name ? dir.name : 'SD Card' %></span><a href="javascript:void(0)" id="edit-button" data-role="button" data-icon="gear" data-iconpos="notext" data-inline="true" data-mini="true" data-theme="a">Edit</a>
+    <a href="javascript:void(0)" id="up-button" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-theme="a">Up</a>
+    <span id="dir-text"><%= dir.name ? dir.name : 'SD Card' %></span>
+    <a href="javascript:void(0)" id="edit-button" data-role="button" data-icon="gear" data-iconpos="notext" data-theme="a" class="ui-btn-right">Edit</a>
 </script>
 
 <script id="entry-template" type="text/template">
@@ -49,11 +51,13 @@
 </script>
 
 <script id="footer-template" type="text/template">
-    <div data-role="controlgroup" data-type="horizontal">
-        <a href="javascript:void(0)" id="copy-button" data-role="button">Copy</a>
-        <a href="javascript:void(0)" id="cut-button" data-role="button">Cut</a>
-        <a href="javascript:void(0)" id="paste-button" data-role="button">Paste</a>
-        <a href="javascript:void(0)" id="delete-button" data-role="button">Delete</a>
+    <div data-role="navbar">
+        <ul>
+            <li><a href="javascript:void(0)" id="copy-button" data-role="button">Copy</a></li>
+            <li><a href="javascript:void(0)" id="cut-button" data-role="button">Cut</a></li>
+            <li><a href="javascript:void(0)" id="paste-button" data-role="button">Paste</a></li>
+            <li><a href="javascript:void(0)" id="delete-button" data-role="button">Delete</a></li>
+        </ul>
     </div>
 </script>
 

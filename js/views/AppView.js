@@ -37,9 +37,10 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
 
         render: function() {
             console.log("Render Appview");
-            this.$el.find("#header").html(this.templates.header(this.model.get("dirEntry"))).trigger("create");
+            this.$el.find("#header").html(this.templates.header(this.model.get("dirEntry")));//.trigger("create");
             // console.log(this.templates.edit.toString());
-            this.$el.find("#footer").html(this.templates.footer()).trigger("create");
+            this.$el.find("#footer").html(this.templates.footer());//.trigger("create");
+            this.$el.trigger("create");
             // this.$el.find("#footer").html(_.template($("script#edit-template").html())).trigger("create");
             /* var $div = $("div");
             $div.html($("script#edit-template").html());
@@ -50,7 +51,7 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
         onTapUpButton: function() {
             console.log("In goUpDir()");
             if (this.model.get("mode") == "Edit") {
-                return;
+                this.model.set("mode", "Browse");
             }
             var dirEntry = this.model.get("dirEntry"), that = this;
             dirEntry.getParent(function(result) {

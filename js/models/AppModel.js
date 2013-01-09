@@ -4,7 +4,9 @@
 define(["jquery", "backbone"], function($, Backbone) {
 
     var AppModel = Backbone.Model.extend({
-        dirEntry: null
+        initialize: function() {
+            console.log("Init AppModel");
+        }
     });
 
     return AppModel;
