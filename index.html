@@ -6,41 +6,53 @@
 
       <meta name="viewport" content="width=device-width, initial-scale=1">
 
-      <link rel="stylesheet" href="style/jquery.mobile.css" />
+      <link rel="stylesheet" href="style/jquerymobile.css" />
       <link rel="stylesheet" href="style/filemanager.css" />
       <script>
         window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
         window.requestFileSystem(TEMPORARY, 1024 * 1024, function(fs) {
-        navigator.mozSDCard = {
-            name: "SDCard",
-            root: fs.root
-        };
-        console.log(navigator.mozSDCard.root);
+            navigator.mozSDCard = {
+                name: "SD Card",
+                root: fs.root
+            };
+            console.log(navigator.mozSDCard.root);
         });
       </script>
       <script src="js/libs/require.js" data-main="js/filemanager"></script>
 </head>
 <body>
 
-<div id="home" data-role="page" data-title="Categories">
-  
+<div id="home" data-role="page" data-title="File Manger">
+
       <div id="header" data-role="header">
       </div><!-- /header -->
-  
+
       <div data-role="content">
-            <ul id="entries" data-role="listview" data-inset="true">
+            <ul id="entries" data-role="listview">
             </ul>
       </div><!-- /content -->
+
+      <div id="footer" data-role="footer">
+      </div><!-- /footer -->
 
 </div>
 
 <!-- Underscore Templates -->
 <script id="header-template" type="text/template">
-    <img id="up-button" src="style/images/up_icon.png" /><span> <%= dir.fullPath %></span>
+    <a href="javascript:void(0)" id="up-button" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-inline="true" data-mini="true" data-theme="a">Up</a><span id="dir-text"><%= dir.name ? dir.name : 'SD Card' %></span><a href="javascript:void(0)" id="edit-button" data-role="button" data-icon="gear" data-iconpos="notext" data-inline="true" data-mini="true" data-theme="a">Edit</a>
 </script>
 
 <script id="entry-template" type="text/template">
-    <img src="style/images/<%= entry.isDirectory ? 'dir' : 'file' %>_icon.png" /><span><%= entry.name %></span>
+    <a href="javascript:void(0)"><img src="style/images/<%= entry.isDirectory ? 'dir' : 'file' %>_icon.png" /><%= entry.name %></a>
+</script>
+
+<script id="footer-template" type="text/template">
+    <div data-role="controlgroup" data-type="horizontal">
+        <a href="javascript:void(0)" id="copy-button" data-role="button">Copy</a>
+        <a href="javascript:void(0)" id="cut-button" data-role="button">Cut</a>
+        <a href="javascript:void(0)" id="paste-button" data-role="button">Paste</a>
+        <a href="javascript:void(0)" id="delete-button" data-role="button">Delete</a>
+    </div>
 </script>
 
 </body>

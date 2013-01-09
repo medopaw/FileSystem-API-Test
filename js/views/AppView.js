@@ -1,45 +1,148 @@
 // App View
 // =============
 
-// Includes file dependencies
-define([ "jquery", "backbone", "utils", "models/AppModel", "views/EntriesView" ], function($, Backbone, Utils, AppModel, EntriesView) {
+define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "views/EntriesView"], function($, Backbone, Utils, AppModel, EntryModel, EntriesView) {
 
-    // Extends Backbone.View
     var AppView = Backbone.View.extend( {
-
-        el:$("#home"),
 
         templates: {
             header: function(dir) {
                 return _.template($("script#header-template").html(), {dir: dir})
-            }
+            },
+            footer: _.template($("script#footer-template").html())
         },
 
         events: {
-            "click #up-button": "goUpDir"
+            "tap #up-button": "onTapUpButton",
+            "tap #edit-button": "onTapEditButton",
+            "tap #copy-button": "onTapCopyButton",
+            "tap #cut-button": "onTapCutButton",
+            "tap #paste-button": "onTapPasteButton",
+            "tap #delete-button": "onTapDeleteButton",
+            "taphold": "onTaphold"
         },
 
         initialize: function() {
             console.log("Init AppView");
-            this.entriesView = new EntriesView();
-            this.entriesView.owner = this;
-            this.model = new AppModel();
+            this.entriesView = new EntriesView({
+                el: "#entries",
+                owner: this
+            });
+            this.model = new AppModel({mode: "Browse"});
             // dirEntry must be set after event binding
             this.model.on("change:dirEntry", this.setupPage, this);
-            this.model.set("dirEntry", navigator.mozSDCard.root);
+            this.model.on("change:mode", this.changeMode, this);
+            // this.model.set("dirEntry", navigator.mozSDCard.root);
         },
 
         render: function() {
-            this.$el.find("#header").html(this.templates.header(this.model.get("dirEntry")));
+            console.log("Render Appview");
+            this.$el.find("#header").html(this.templates.header(this.model.get("dirEntry"))).trigger("create");
+            // console.log(this.templates.edit.toString());
+            this.$el.find("#footer").html(this.templates.footer()).trigger("create");
+            // this.$el.find("#footer").html(_.template($("script#edit-template").html())).trigger("create");
+            /* var $div = $("div");
+            $div.html($("script#edit-template").html());
+            this.$el.find("#edit").append($div); */
             return this;
         },
 
-        goUpDir: function() {
+        onTapUpButton: function() {
             console.log("In goUpDir()");
+            if (this.model.get("mode") == "Edit") {
+                return;
+            }
             var dirEntry = this.model.get("dirEntry"), that = this;
             dirEntry.getParent(function(result) {
                 that.model.set("dirEntry", result);
             });
+        },
+
+        onTapEditButton: function(e) {
+            this.onTaphold(e);
+        },
+
+        onTapCopyButton: function() {
+            Utils.refreshClipboard(this.entriesView.collection);
+            Utils.clipboard.action = "Copy";
+            this.model.set("mode", "Browse");
+        },
+
+        onTapCutButton: function() {
+            Utils.refreshClipboard(this.entriesView.collection);
+            Utils.clipboard.action = "Move";
+            this.model.set("mode", "Browse");
+        },
+
+        onTapPasteButton: function() {
+            var entriesCollection = this.entriesView.collection, clipboard = Utils.clipboard;
+            console.log(clipboard.length + " entries in clipboard");
+            for (var i = 0; i < clipboard.length; i++) {
+                console.log(clipboard.action);
+                switch (clipboard.action) {
+                    case "Copy": {
+                        clipboard[i].copyTo(this.model.get("dirEntry"), undefined, function(result) {
+                            var entryModel = new EntryModel({entry: result});
+                            entriesCollection.add(entryModel);
+                        }, Utils.errorHandler);
+                        break;
+                    }
+                    case "Move": {
+                        clipboard[i].moveTo(this.model.get("dirEntry"), undefined, function(result) {
+                            var entryModel = new EntryModel({entry: result});
+                            entriesCollection.add(entryModel);
+                        }, Utils.errorHandler);
+                        break;
+                    }
+                    default: {
+                    }
+                }
+            }
+            clipboard = [];
+            clipboard.action = null;
+            this.model.set("mode", "Browse");
+        },
+
+        onTapDeleteButton: function() {
+           // var trash = [];
+           var entriesCollection = this.entriesView.collection;
+           entriesCollection.each(function(entryModel) {
+               if (entryModel.get("selected")) {
+                   var entry = entryModel.get("entry");
+                   if (entry.isDirectory) {
+                       entry.removeRecursively(function() {
+                           console.log("Dir removed");
+                           // entryModel.destroy();
+                           // trash.push(entryModel);
+                           entriesCollection.remove(entryModel);
+                       }, Utils.errorHandler);
+                   } else {
+                       entry.remove(function() {
+                           console.log("File removed");
+                           // entryModel.destroy();
+                           // trash.push(entryModel);
+                           entriesCollection.remove(entryModel);
+                       }, Utils.errorHandler);
+                   }
+               }
+           }, this);
+           this.model.set("mode", "Browse");
+        },
+
+        onTaphold: function(e) {
+            console.log('Trigger taphold event');
+            e.stopPropagation();
+            switch (this.model.get("mode")) {
+                case "Edit": {
+                    this.model.set("mode", "Browse");
+                    break;
+                }
+                case "Browse":
+                default: {
+                    this.model.set("mode", "Edit");
+                    break;
+                }
+            }
         },
 
         setupPage: function() {
@@ -54,8 +157,30 @@ define([ "jquery", "backbone", "utils", "models/AppModel", "views/EntriesView" ]
             dirEntry.createReader().readEntries(function(results) {
                 that.entriesView.collection.setEntries(results);
             });
+        },
+
+        changeMode: function() {
+            switch (this.model.get("mode")) {
+                case "Edit": {
+                    this.$el.find("#footer").slideToggle();
+                    break;
+                }
+                case "Browse": {
+                    this.$el.find("#footer").slideToggle();
+                    this.entriesView.collection.each(function(entryModel) {
+                        if (entryModel.get("selected")) {
+                            entryModel.set("selected", false);
+                            Utils.switchTheme(entryModel.view.$el, "b", "c");
+                        }
+                    }, this);
+                    break;
+                }
+                default: {
+                }
+            }
         }
     });
 
     return AppView;
+
 });

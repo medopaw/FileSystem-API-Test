@@ -1,7 +1,8 @@
 // Entry Collection
 // ===================
 
-define([ "jquery","backbone","models/EntryModel" ], function( $, Backbone, EntryModel ) {
+define(["jquery", "backbone", "models/EntryModel"], function($, Backbone, EntryModel) {
+
     var EntriesCollection = Backbone.Collection.extend({
 
         initialize: function() {
@@ -22,4 +23,5 @@ define([ "jquery","backbone","models/EntryModel" ], function( $, Backbone, Entry
     });
 
     return EntriesCollection;
+
 });
