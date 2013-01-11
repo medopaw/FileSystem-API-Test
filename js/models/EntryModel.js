@@ -5,7 +5,7 @@ define(["jquery", "backbone"], function($, Backbone) {
     var EntryModel = Backbone.Model.extend({
         initialize: function() {
             console.log("Init EntryModel");
-            console.log("entry="+this.get("entry").fullPath);
+            console.log("entry=%0".format(this.get("entry").fullPath));
         }
     });
 

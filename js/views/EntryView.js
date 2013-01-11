@@ -51,12 +51,17 @@ define(["jquery", "backbone", "utils", "models/EntryModel"], function($, Backbon
 
         render: function() {
             console.log("Render EntryView");
-            var entry = this.model.get("entry");
-            this.$el.html(this.template(entry));//.data("kind", entry.isDirectory ? "Directory" : "File");
+            var $el = this.$el, entry = this.model.get("entry");
+            $el.html(this.template(entry));//.data("kind", entry.isDirectory ? "Directory" : "File");
             if (!entry.isDirectory) {
-                this.$el.jqmData("icon", false);
+                $el.jqmData("icon", false);
             }
             // console.log(this.$el.data("kind"));
+            entry.getMetadata(function(metadata) {
+                console.log(entry.fullPath+" metadata:"+metadata.size+", "+metadata.modificationTime);
+                // console.log(isNaN(metadata.size));
+                $el.find("p").html(metadata.modificationTime.formatString("YYYY-0MM-0DD 0hh:0mm") + (entry.isDirectory ? "" : "<span>%0</span>".format(Utils.prettifySize(metadata.size))));
+            }, Utils.errorHandler);
             return this;
         },
     });

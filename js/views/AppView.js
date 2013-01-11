@@ -78,7 +78,7 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
         onTapPasteButton: function() {
             var entriesCollection = this.entriesView.collection, clipboard = Utils.clipboard;
             var that = this, parentDirEntry = this.model.get("dirEntry");
-            console.log(clipboard.length + " entries in clipboard");
+            console.log("%0 entries in clipboard".format(clipboard.length));
             var successHandler = function(result) {
                 // current dir may have changed
                 if (that.model.get("dirEntry").fullPath == parentDirEntry.fullPath) {

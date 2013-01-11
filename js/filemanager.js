@@ -4,11 +4,12 @@ require.config({
       // 3rd party script alias names (Easier to type "jquery" than "libs/jquery-1.8.2.min")
       paths: {
             // Core Libraries
-            "utils": "libs/utils",
             "jquery": "libs/jquery",
             "jquerymobile": "libs/jquerymobile",
             "underscore": "libs/lodash",
-            "backbone": "libs/backbone"
+            "backbone": "libs/backbone",
+            "utils": "utilities/utils",
+            "tiddlywiki": "utilities/tiddlywiki"
       },
 
       // Sets the configuration for your third party scripts that are not AMD compatible
@@ -36,8 +37,9 @@ require(["jquery", "backbone", "routers/mobileRouter"], function($, Backbone, Mo
 		}
 	);
 
-	require( ["jquerymobile"], function() {
+	require(["jquerymobile", "tiddlywiki/Dates", "tiddlywiki/Strings"], function() {
 		// Instantiates a new Backbone.js Mobile Router
 		this.router = new MobileRouter();
 	});
+
 });

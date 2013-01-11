@@ -4,12 +4,27 @@
 define([], function() {
 
    var Utils = {
-       errorHandler: function() {
+
+        prettifySize: function(bytes) {
+            if(!bytes || (isNaN(bytes) && isNaN(parseFloat(bytes)))) {
+                return "0Bytes";
+            }
+            var units = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+            var i = Math.floor(Math.log(bytes) / Math.log(1024));
+            var size = (bytes / Math.pow(1024, i, 2)).toString();
+            var point = size.indexOf(".");
+            if (point >= 0) {
+                size = size.slice(0, point + 2);
+            }
+            return size + units[i];
+        },
+
+        errorHandler: function() {
            var msg = 'whatever';
            alert('Error: ' + msg);
-       },
+        },
 
-       switchTheme: function($el, x, y) {
+        switchTheme: function($el, x, y) {
            // console.log($el.jqmData("theme")+$el.attr("data-theme"));
            // switch($el.jqmData("theme")) {
            switch($el.attr("data-theme")) {
@@ -24,18 +39,19 @@ define([], function() {
                default: {
                }
            }
-       },
+        },
 
-       refreshClipboard: function(collection) {
+        refreshClipboard: function(collection) {
            this.clipboard = [];
            collection.each(function(entryModel) {
                if (entryModel.get("selected")) {
                    this.clipboard.push(entryModel.get("entry"));
                }
            }, this);
-       }
-   };
+        }
 
-   return Utils;
+    };
+
+    return Utils;
 
 });
