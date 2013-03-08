@@ -1,5 +1,5 @@
-var DEBUG = 1;
-var CREATE_RANDOM_FILES = 1, RANDOM_FILES_COUNT = 100;
+var DEBUG = true;
+var CREATE_RANDOM_FILES = true, RANDOM_FILES_COUNT = 100;
 var SPACE_LIMIT = 1024 * 1024;
 var MAIN_SCRIPT = "js/libs/require.js";
 
