@@ -1,5 +1,7 @@
-var DEBUG = 1, CREATE_RANDOM_FILES = 1;
-var SPACE_LIMIT = 1024 * 1024, MAIN_SCRIPT = "js/libs/require.js";
+var DEBUG = 1;
+var CREATE_RANDOM_FILES = 1, RANDOM_FILES_COUNT = 100;
+var SPACE_LIMIT = 1024 * 1024;
+var MAIN_SCRIPT = "js/libs/require.js";
 
 function debug(msg) {
     if (DEBUG) {
@@ -74,7 +76,7 @@ var glb = {
     }];
     if (CREATE_RANDOM_FILES) {
         tasks.splice(1, 0, { // insert at 2nd place
-            count: 100,
+            count: RANDOM_FILES_COUNT,
             work: createRandEntry
         });
     }
