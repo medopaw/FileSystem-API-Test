@@ -1,4 +1,5 @@
-var DEBUG = 1, CREATE_RANDOM_FILES = 1, SPACE_LIMIT = 1024 * 1024;
+var DEBUG = 1, CREATE_RANDOM_FILES = 1;
+var SPACE_LIMIT = 1024 * 1024, MAIN_SCRIPT = "js/libs/require.js";
 
 function debug(msg) {
     if (DEBUG) {
@@ -114,7 +115,11 @@ function loadMainScript() {
         root: glb.fs.root
     };
     console.log(navigator.mozSDCard.root);
-    document.getElementById("mainscript").src = "js/libs/require.js";
+    var oHead = document.getElementsByTagName('HEAD').item(0);
+    var oScript= document.createElement("script");
+    oScript.setAttribute("src", MAIN_SCRIPT);
+    oScript.setAttribute("data-main", "js/filemanager");
+    oHead.appendChild(oScript);
 }
 
 function initFS() {
