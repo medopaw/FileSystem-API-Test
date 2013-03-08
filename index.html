@@ -11,6 +11,7 @@
       <link rel="stylesheet" href="style/jquerymobile.css" />
       <link rel="stylesheet" href="style/filemanager.css" />
       <script>
+        console.log("Let's go!");
         window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
         window.requestFileSystem(TEMPORARY, 1024 * 1024, function(fs) {
             navigator.mozSDCard = {
@@ -18,9 +19,12 @@
                 root: fs.root
             };
             console.log(navigator.mozSDCard.root);
+            document.getElementById("mainscript").src = "js/libs/require.js";
+        }, function() {
+            alert("Filesystem initialization failed.  Try run chrome with --unlimited-quota-for-files parameter.");
         });
       </script>
-      <script src="js/libs/require.js" data-main="js/filemanager"></script>
+      <script id="mainscript" src="" data-main="js/filemanager"></script>
 </head>
 <body>
 
