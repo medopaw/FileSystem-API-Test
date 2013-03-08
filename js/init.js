@@ -1,4 +1,4 @@
-var DEBUG = 1, CREATE_RANDOM_FILES = 1;
+var DEBUG = 1, CREATE_RANDOM_FILES = 1, SPACE_LIMIT = 1024 * 1024;
 
 function debug(msg) {
     if (DEBUG) {
@@ -121,7 +121,7 @@ function initFS() {
     try {
         var runner = this.engine;
         window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
-        window.requestFileSystem(TEMPORARY, 1024 * 1024, function(fs) {
+        window.requestFileSystem(TEMPORARY, SPACE_LIMIT, function(fs) {
             glb.fs = fs;
             glb.dir = fs.root;
             runner.check();
